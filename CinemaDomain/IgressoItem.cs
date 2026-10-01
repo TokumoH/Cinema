@@ -1,7 +1,7 @@
 ﻿
 namespace CinemaDomain
 {
-    public class IngressoItem
+    public class IngressoItem : BaseEntity
     {
         public int Assento { get; set; }
 
