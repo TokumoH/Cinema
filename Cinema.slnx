@@ -1,5 +1,7 @@
 <Solution>
+  <Project Path="CinemaApp/CinemaApp.csproj" Id="45a18007-857a-415e-9c56-61bb289f00c2" />
   <Project Path="CinemaDomain/CinemaDomain.csproj" />
   <Project Path="CinemaRepository/CinemaRepository.csproj" Id="9af7fe12-f8e3-4877-9fc6-04c05842e936" />
+  <Project Path="CinemaServices/CinemaServices.csproj" Id="aa8418e4-d210-41e3-83fb-4887c4c0b8f3" />
   <Project Path="CinemaTeste/CinemaTeste.csproj" />
 </Solution>

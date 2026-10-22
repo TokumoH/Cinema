@@ -1,0 +1,43 @@
+﻿using AutoMapper;
+using CinemaDomain;
+using CinemaRepository.Base;
+using CinemaRepository.Context;
+using CinemaRepository.Repository;
+using CinemaServices.Base;
+using CinemaServices.Validators;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
+
+namespace CinemaTeste
+{
+    [TestClass]
+    public class TesteCinemaService
+    {
+        private ServiceCollection services;
+        public ServiceProvider configureServices()
+        {
+            var conStr = $"Host=localhost;Port=5432;Username=postgres;Password=45682;Database=CinemaDB;";
+
+            services = new ServiceCollection();
+            services.AddDbContext<MyDBContext>(options => options.UseNpgsql(conStr));
+            services.AddScoped<IBaseRepository<Genero>, BaseRepository<Genero>>();
+            services.AddScoped<IBaseService<Genero>, BaseService<Genero>>();
+            services.AddSingleton(new MapperConfiguration(cfg => {cfg.CreateMap<Genero, Genero>();},NullLoggerFactory.Instance).CreateMapper());
+
+            return services.BuildServiceProvider();
+        }
+        [TestMethod]
+        public void testGeneroService() 
+        { 
+            var serviceProvider = configureServices();
+            var generoService = serviceProvider.GetService<IBaseService<Genero>>();
+            var genero = new Genero { Id = 1, Nome = "Drama" };
+            var result = generoService.Create<Genero, Genero, GeneroValidator>(genero);
+            Console.WriteLine(JsonSerializer.Serialize(result));
+        }
+            
+        
+    }
+}

@@ -1,0 +1,68 @@
+﻿using AutoMapper;
+using CinemaDomain.Base;
+using CinemaRepository.Base;
+using CinemaServices.Base;
+using FluentValidation;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CinemaServices.Base
+{
+    public class BaseService<TypeEntity> : IBaseService<TypeEntity> where TypeEntity : IBaseEntity
+    {
+        private readonly IBaseRepository<TypeEntity> _baseRepository;
+        private readonly IMapper _mapper;
+
+        public BaseService(IBaseRepository<TypeEntity> repository, IMapper mapper)
+        {
+            _baseRepository = repository;
+            _mapper = mapper;
+        }
+
+        private void Validate(TypeEntity obj, AbstractValidator<TypeEntity> validator)
+        {
+            validator.ValidateAndThrow(obj);
+        }
+        public TypeOutputModel Create<TypeInputModel, TypeOutputModel, TypeValidator>(TypeEntity entity)
+            where TypeInputModel : class
+            where TypeOutputModel : class
+            where TypeValidator : AbstractValidator<TypeEntity>
+        {
+            var e = _mapper.Map<TypeEntity>(entity);
+            Validate(e, Activator.CreateInstance<TypeValidator>());
+            _baseRepository.Create(e);
+            var outputModel = _mapper.Map<TypeOutputModel>(e);
+            return outputModel;
+        }
+
+        public IEnumerable<TypeOutputModel> ReadAll<TypeOutputModel>() where TypeOutputModel : class
+        {
+            var entities = _baseRepository.ReadAll();
+            return entities.Select(e => _mapper.Map<TypeOutputModel>(e));
+        }
+
+        public TypeOutputModel ReadbyId<TypeOutputModel>(int id) where TypeOutputModel : class
+        {
+            var entity = _baseRepository.ReadbyId(id);
+            return _mapper.Map<TypeOutputModel>(entity);
+        }
+
+        public TypeOutputModel Update<TypeInputModel, TypeOutputModel, TypeValidator>(TypeEntity entity)
+            where TypeInputModel : class
+            where TypeOutputModel : class
+            where TypeValidator : FluentValidation.AbstractValidator<TypeEntity>
+        {
+            var e = _mapper.Map<TypeEntity>(entity);
+            Validate(e, Activator.CreateInstance<TypeValidator>());
+            _baseRepository.Update(e);
+            return _mapper.Map<TypeOutputModel>(e);
+        
+        }
+
+        public void Delete(int id)
+        {
+            _baseRepository.Delete(id);
+        }
+    }
+}

@@ -7,8 +7,7 @@ using CinemaRepository.Mapping;
 
 namespace CinemaRepository.Context
 {
-    public class myDBContext
-    {
+       
         public partial class MyDBContext : DbContext
         {
             public DbSet<Genero> Genero { get; set; }
@@ -17,7 +16,7 @@ namespace CinemaRepository.Context
             public DbSet<Sessao> Sessao { get; set; }
             public DbSet<Ingresso> Ingresso { get; set; }
             public DbSet<IngressoItem> IngressoItem { get; set; }
-            public MyDBContext()
+            public MyDBContext(DbContextOptions<MyDBContext> options) : base(options)
             {
                 Database.EnsureCreated();
 
@@ -36,5 +35,5 @@ namespace CinemaRepository.Context
            
         }
         
-    }
+    
 }
